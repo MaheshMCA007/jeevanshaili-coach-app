@@ -1,98 +1,215 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {
+  ChevronRight,
+  Droplets,
+  Dumbbell,
+  Flame,
+  Footprints,
+  Moon,
+  TrendingUp,
+  User,
+  Utensils
+} from 'lucide-react-native';
+import React, { useEffect } from 'react';
+import { ActivityIndicator, Dimensions, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { BarChart, LineChart } from 'react-native-chart-kit';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../src/store';
+import { fetchDashboardData } from '../../src/store/slices/dashboardSlice';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const screenWidth = Dimensions.get('window').width;
 
-export default function HomeScreen() {
+const MetricCard = ({ title, value, unit, icon: Icon, color }: any) => (
+  <View className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex-1 m-1">
+    <View className={`w-10 h-10 rounded-2xl items-center justify-center mb-3 bg-${color}-100`}>
+      <Icon size={20} color={color === 'teal' ? '#0d9488' : color === 'orange' ? '#c2410c' : color === 'blue' ? '#2563eb' : '#475569'} />
+    </View>
+    <Text className="text-gray-500 text-xs font-medium">{title}</Text>
+    <View className="flex-row items-baseline mt-1">
+      <Text className="text-xl font-bold text-gray-800">{value}</Text>
+      <Text className="text-gray-500 text-[10px] ml-1">{unit}</Text>
+    </View>
+  </View>
+);
+
+export default function DashboardScreen() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { summary, steps, calories, weight, nutrition, loading } = useSelector((state: RootState) => state.dashboard);
+  console.log("summary----------",JSON.stringify(summary,null,2))
+  console.log("steps----------",JSON.stringify(steps,null,2))
+  console.log("calories----------",JSON.stringify(calories,null,2))
+  console.log("weight----------",JSON.stringify(weight,null,2))
+ console.log("nutrition----------",JSON.stringify(nutrition,null,2))
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    dispatch(fetchDashboardData());
+  }, [dispatch]);
+
+  const onRefresh = () => {
+    dispatch(fetchDashboardData());
+  };
+
+  const chartConfig = {
+    backgroundGradientFrom: "#fff",
+    backgroundGradientTo: "#fff",
+    color: (opacity = 1) => `rgba(13, 148, 136, ${opacity})`,
+    strokeWidth: 2,
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false,
+    decimalPlaces: 0,
+    labelColor: (opacity = 1) => `rgba(100, 116, 139, ${opacity})`,
+    propsForDots: {
+      r: "4",
+      strokeWidth: "2",
+      stroke: "#0d9488"
+    }
+  };
+
+  const nutritionData = {
+    labels: ["Prot", "Carb", "Fat"],
+    datasets: [{
+      data: [
+        summary?.avgProtein || 80,
+        summary?.avgCarbs || 120,
+        summary?.avgFat || 45
+      ]
+    }]
+  };
+
+  if (loading && !summary) {
+    return (
+      <View className="flex-1 items-center justify-center bg-teal-50">
+        <ActivityIndicator size="large" color="#0d9488" />
+      </View>
+    );
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <SafeAreaView className="flex-1 bg-slate-50" edges={['top']}>
+      <ScrollView
+        className="flex-1 px-4"
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+        }
+      >
+        <View className="py-6 flex-row justify-between items-center">
+          <View>
+            <Text className="text-gray-500 text-sm font-medium">Dashboard</Text>
+            <Text className="text-2xl font-bold text-gray-800">Welcome back, {user?.name || 'Jeevanshaili'}</Text>
+          </View>
+          <TouchableOpacity className="w-12 h-12 bg-white rounded-full items-center justify-center shadow-sm border border-gray-100">
+            <User size={24} color="#64748b" />
+          </TouchableOpacity>
+        </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        {/* Metric Cards Grid */}
+        <View className="flex-row flex-wrap -m-1 mb-6">
+          <MetricCard
+            title="Calories Burned"
+            value={summary?.todayCaloriesBurned || 0}
+            unit="kcal"
+            icon={Flame}
+            color="orange"
+          />
+          <MetricCard
+            title="Steps"
+            value={summary?.todaySteps || 21081}
+            unit="steps"
+            icon={Footprints}
+            color="teal"
+          />
+        </View>
+        <View className="flex-row flex-wrap -m-1 mb-6">
+          <MetricCard
+            title="Cal Intake"
+            value={summary?.todayCaloriesConsumed || 1653}
+            unit="kcal"
+            icon={Utensils}
+            color="blue"
+          />
+          <MetricCard
+            title="Water Intake"
+            value={summary?.todayWaterIntake || 7}
+            unit="L"
+            icon={Droplets}
+            color="teal"
+          />
+        </View>
+        <View className="flex-row flex-wrap -m-1 mb-6">
+          <MetricCard
+            title="Sleep"
+            value={summary?.todaySleepContent || 0}
+            unit="hrs"
+            icon={Moon}
+            color="blue"
+          />
+          <MetricCard
+            title="Workouts"
+            value={summary?.todayWorkouts || 0}
+            unit="sessions"
+            icon={Dumbbell}
+            color="orange"
+          />
+        </View>
+
+        {/* Charts Section */}
+        <View className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 mb-6">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-lg font-bold text-gray-800">Weekly Steps</Text>
+            <TouchableOpacity className="flex-row items-center">
+              <Text className="text-teal-600 font-medium text-xs">View detail</Text>
+              <ChevronRight size={14} color="#0d9488" />
+            </TouchableOpacity>
+          </View>
+          <LineChart
+            data={{
+              labels: steps.length > 0 ? steps.slice(-7).map(s => s.date.split('-')[2]) : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+              datasets: [{ data: steps.length > 0 ? steps.slice(-7).map(s => s.count) : [2000, 4000, 3500, 5000, 4200, 6000, 5500] }]
+            }}
+            width={screenWidth - 64}
+            height={180}
+            chartConfig={chartConfig}
+            bezier
+            style={{ paddingRight: 0, borderRadius: 16 }}
+          />
+        </View>
+
+        <View className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 mb-6">
+          <Text className="text-lg font-bold text-gray-800 mb-4">Average Nutrition</Text>
+          <BarChart
+            data={nutritionData}
+            width={screenWidth - 64}
+            height={200}
+            yAxisLabel=""
+            yAxisSuffix="g"
+            chartConfig={{ ...chartConfig, color: (opacity = 1) => `rgba(249, 115, 22, ${opacity})` }}
+            verticalLabelRotation={0}
+            style={{ borderRadius: 16 }}
+          />
+        </View>
+
+        <View className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 mb-6">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-lg font-bold text-gray-800">Weight Trend</Text>
+            <TrendingUp size={20} color="#0d9488" />
+          </View>
+          <LineChart
+            data={{
+              labels: weight.length > 0 ? weight.slice(-7).map(w => w.date.split('-')[2]) : ["11/14", "11/21", "12/05", "12/12", "12/19", "12/26", "01/02"],
+              datasets: [{ data: weight.length > 0 ? weight.slice(-7).map(w => w.weight) : [75, 74, 74.5, 73.8, 74.2, 73.5, 74] }]
+            }}
+            width={screenWidth - 64}
+            height={180}
+            chartConfig={{ ...chartConfig, color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`, propsForDots: { r: "4", strokeWidth: "2", stroke: "#3b82f6" } }}
+            bezier
+            style={{ borderRadius: 16 }}
+          />
+        </View>
+
+        {/* Footer spacing */}
+        <View className="h-10" />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

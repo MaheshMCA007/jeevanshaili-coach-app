@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "jeevanshaili-new",
-    "slug": "jeevanshaili-new",
+    "name": "Jeevanshaili-Coach",
+    "slug": "jeevanshaili-coach",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "jeevanshailinew",
+    "scheme": "jeevanshailicoach",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
