@@ -35,11 +35,6 @@ const MetricCard = ({ title, value, unit, icon: Icon, color }: any) => (
 export default function DashboardScreen() {
   const dispatch = useDispatch<AppDispatch>();
   const { summary, steps, calories, weight, nutrition, loading } = useSelector((state: RootState) => state.dashboard);
-  console.log("summary----------",JSON.stringify(summary,null,2))
-  console.log("steps----------",JSON.stringify(steps,null,2))
-  console.log("calories----------",JSON.stringify(calories,null,2))
-  console.log("weight----------",JSON.stringify(weight,null,2))
- console.log("nutrition----------",JSON.stringify(nutrition,null,2))
   const { user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
@@ -107,14 +102,14 @@ export default function DashboardScreen() {
         <View className="flex-row flex-wrap -m-1 mb-6">
           <MetricCard
             title="Calories Burned"
-            value={summary?.todayCaloriesBurned || 0}
+            value={summary?.totals.caloriesIntake || 0}
             unit="kcal"
             icon={Flame}
             color="orange"
           />
           <MetricCard
             title="Steps"
-            value={summary?.todaySteps || 21081}
+            value={summary?.totals.steps || 21081}
             unit="steps"
             icon={Footprints}
             color="teal"
@@ -123,14 +118,14 @@ export default function DashboardScreen() {
         <View className="flex-row flex-wrap -m-1 mb-6">
           <MetricCard
             title="Cal Intake"
-            value={summary?.todayCaloriesConsumed || 1653}
+            value={summary?.totals?.caloriesBurned || 1653}
             unit="kcal"
             icon={Utensils}
             color="blue"
           />
           <MetricCard
             title="Water Intake"
-            value={summary?.todayWaterIntake || 7}
+            value={summary?.totals?.waterIntake || 7}
             unit="L"
             icon={Droplets}
             color="teal"
@@ -139,14 +134,14 @@ export default function DashboardScreen() {
         <View className="flex-row flex-wrap -m-1 mb-6">
           <MetricCard
             title="Sleep"
-            value={summary?.todaySleepContent || 0}
+            value={summary?.totals?.sleepHours || 0}
             unit="hrs"
             icon={Moon}
             color="blue"
           />
           <MetricCard
             title="Workouts"
-            value={summary?.todayWorkouts || 0}
+            value={summary?.totals?.workoutsCompleted || 0}
             unit="sessions"
             icon={Dumbbell}
             color="orange"
@@ -164,8 +159,17 @@ export default function DashboardScreen() {
           </View>
           <LineChart
             data={{
-              labels: steps.length > 0 ? steps.slice(-7).map(s => s.date.split('-')[2]) : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-              datasets: [{ data: steps.length > 0 ? steps.slice(-7).map(s => s.count) : [2000, 4000, 3500, 5000, 4200, 6000, 5500] }]
+              labels: steps.length > 0
+                ? steps.slice(-7).map(s => {
+                  const d = s.date || s.createdAt;
+                  return d ? new Date(d).getDate().toString() : "";
+                })
+                : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+              datasets: [{
+                data: steps.length > 0
+                  ? steps.slice(-7).map(s => Number(s.count || s.steps || 0))
+                  : [2000, 4000, 3500, 5000, 4200, 6000, 5500]
+              }]
             }}
             width={screenWidth - 64}
             height={180}
@@ -196,8 +200,17 @@ export default function DashboardScreen() {
           </View>
           <LineChart
             data={{
-              labels: weight.length > 0 ? weight.slice(-7).map(w => w.date.split('-')[2]) : ["11/14", "11/21", "12/05", "12/12", "12/19", "12/26", "01/02"],
-              datasets: [{ data: weight.length > 0 ? weight.slice(-7).map(w => w.weight) : [75, 74, 74.5, 73.8, 74.2, 73.5, 74] }]
+              labels: weight.length > 0
+                ? weight.slice(-7).map(w => {
+                  const d = w.date || w.createdAt;
+                  return d ? new Date(d).getDate().toString() : "";
+                })
+                : ["11/14", "11/21", "12/05", "12/12", "12/19", "12/26", "01/02"],
+              datasets: [{
+                data: weight.length > 0
+                  ? weight.slice(-7).map(w => Number(w.weight || 0))
+                  : [75, 74, 74.5, 73.8, 74.2, 73.5, 74]
+              }]
             }}
             width={screenWidth - 64}
             height={180}

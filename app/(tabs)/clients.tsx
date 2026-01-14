@@ -5,7 +5,7 @@ import { ActivityIndicator, FlatList, Image, Text, TextInput, TouchableOpacity, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../src/store';
-import { fetchClients } from '../../src/store/slices/clientSlice';
+import { fetchClients, setSelectedClientId } from '../../src/store/slices/clientSlice';
 
 export default function ClientsScreen() {
     const dispatch = useDispatch<AppDispatch>();
@@ -17,15 +17,21 @@ export default function ClientsScreen() {
         dispatch(fetchClients());
     }, [dispatch]);
 
-    const filteredClients = clients.filter(client =>
-        client.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        client.email?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredClients = clients.filter(client => {
+        const fullName = `${client.firstName || ""} ${client.lastName || ""}`.toLowerCase();
+        return (
+            fullName.includes(searchQuery.toLowerCase()) ||
+            client.email?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    });
 
     const renderClientItem = ({ item }: { item: any }) => (
         <TouchableOpacity
             className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-3 flex-row items-center"
-            onPress={() => router.push(`/client/${item.id}`)}
+            onPress={() => {
+                dispatch(setSelectedClientId(item._id));
+                router.push(`/client/${item._id}`);
+            }}
         >
             <View className="w-12 h-12 bg-teal-100 rounded-full items-center justify-center mr-4">
                 {item.profileImage ? (
@@ -35,7 +41,9 @@ export default function ClientsScreen() {
                 )}
             </View>
             <View className="flex-1">
-                <Text className="text-gray-800 font-bold text-base">{item.name}</Text>
+                <Text className="text-gray-800 font-bold text-base">
+                    {item.firstName} {item.lastName}
+                </Text>
                 <Text className="text-gray-500 text-xs">{item.email}</Text>
             </View>
             <View className="items-end mr-3">
@@ -80,7 +88,7 @@ export default function ClientsScreen() {
                 ) : (
                     <FlatList
                         data={filteredClients}
-                        keyExtractor={(item) => item.id || item._id}
+                        keyExtractor={(item) => item._id}
                         renderItem={renderClientItem}
                         contentContainerStyle={{ paddingBottom: 100 }}
                         showsVerticalScrollIndicator={false}

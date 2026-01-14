@@ -22,30 +22,42 @@ const initialState: DashboardState = {
 };
 
 export const fetchDashboardData = createAsyncThunk(
-    'dashboard/fetchAll',
+    "dashboard/fetchAll",
     async (_, { rejectWithValue }) => {
         try {
-            // The shared api instance already adds the Bearer token via interceptors
-            const [summary, steps, calories, weight, nutrition] = await Promise.all([
-                api.get('/dashboard/summary'),
-                api.get('/dashboard/steps'),
-                api.get('/dashboard/calories'),
-                api.get('/dashboard/weight'),
-                api.get('/dashboard/nutrition'),
+            const results = await Promise.allSettled([
+                api.get("/dashboard/summary"),
+                api.get("/dashboard/steps"),
+                api.get("/dashboard/calories"),
+                api.get("/dashboard/weight"),
+                api.get("/dashboard/nutrition"),
+
             ]);
+            // const res = await api.get("/dashboard/steps",{
+            //     headers: {
+            //         Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NDE0ZmNiZTY0OWY2M2I3MzRjYzBmMyIsInJvbGUiOiJjb2FjaCIsInRlbmFudElkIjoiNjk0MTRmY2NlNjQ5ZjYzYjczNGNjMGY1IiwiaWF0IjoxNzY4MDUyMzM4LCJleHAiOjE3NjgwNTMyMzh9.Dj5yX6CkCkUxe1dUIPRDwJLYS4GOoAssGimN9rmYAko`,
+            //     },
+            // });
+            // console.log("res.config.headers.Authorization",res.config.headers.Authorization);
+
+            const get = (i: number) =>
+                results[i].status === "fulfilled"
+                    ? (results[i] as any).value.data
+                    : [];
 
             return {
-                summary: summary.data,
-                steps: steps.data,
-                calories: calories.data,
-                weight: weight.data,
-                nutrition: nutrition.data,
+                summary: get(0),
+                steps: get(1),
+                calories: get(2),
+                weight: get(3),
+                nutrition: get(4),
             };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to fetch dashboard data');
+        } catch {
+            return rejectWithValue("Dashboard failed");
         }
     }
 );
+
 
 const dashboardSlice = createSlice({
     name: 'dashboard',
