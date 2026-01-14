@@ -19,7 +19,7 @@ api.interceptors.request.use(
     // prevent 304 cache bug on mobile
     config.headers["Cache-Control"] = "no-cache";
     config.headers["Pragma"] = "no-cache";
-    console.log("api request config", config);
+    console.log("api request config------", config.headers.Authorization);
     return config;
   },
   (error) => Promise.reject(error)

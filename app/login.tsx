@@ -35,11 +35,11 @@ export default function LoginScreen() {
             className="flex-1 bg-white"
         >
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="px-6 py-12">
-                <View className="items-center mb-10">
-                    <View className="w-20 h-20 bg-teal-100 rounded-2xl items-center justify-center mb-4">
+                <View className="items-center mb-10 bg-white">
+                    <View className="w-60 h-60 bg-grey-100 rounded-full items-center justify-center mb-4 bg-gray-100">
                         <Image
                             source={require('@/assets/images/icon.png')}
-                            className="w-16 h-16"
+                            className="w-60 h-60 rounded-full"
                             resizeMode="contain"
                         />
                     </View>
