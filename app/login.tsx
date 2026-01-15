@@ -20,10 +20,10 @@ export default function LoginScreen() {
             Alert.alert('Error', 'Please fill all fields');
             return;
         }
-        console.log("OrgID-",orgId,"email-",email,"password-",password)
+        console.log("OrgID-", orgId, "email-", email, "password-", password)
         const resultAction = await dispatch(login({ email, password, orgId }));
         if (login.fulfilled.match(resultAction)) {
-            router.replace('/(tabs)');
+            router.replace('/(drawer)' as any);
         } else {
             Alert.alert('Login Failed', (resultAction.payload as string) || 'Invalid credentials');
         }
