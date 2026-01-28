@@ -10,11 +10,13 @@ import {
     MoreVertical,
     Weight
 } from 'lucide-react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
+import MealPlannerModal from '../../components/MealPlannerModal';
+import WorkoutPlannerModal from '../../components/WorkoutPlannerModal';
 import { AppDispatch, RootState } from '../../src/store';
 import { clearSelectedClient, fetchClientDetail } from '../../src/store/slices/clientSlice';
 
@@ -38,6 +40,9 @@ export default function ClientDetailScreen() {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const { selectedClient, clientHealth, loading } = useSelector((state: RootState) => state.clients);
+
+    const [mealPlannerOpen, setMealPlannerOpen] = useState(false);
+    const [workoutPlannerOpen, setWorkoutPlannerOpen] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -241,15 +246,35 @@ export default function ClientDetailScreen() {
                 <View className="p-6">
                     <Text className="text-lg font-bold text-gray-800 mb-4">Daily Plan Builder</Text>
                     <View className="space-y-3">
-                        <TouchableOpacity className="bg-black py-4 rounded-2xl items-center flex-row justify-center">
+                        <TouchableOpacity
+                            onPress={() => setMealPlannerOpen(true)}
+                            className="bg-black py-4 rounded-2xl items-center flex-row justify-center"
+                        >
                             <Text className="text-white font-bold">Open Meal Planner</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity className="bg-black py-4 rounded-2xl items-center flex-row justify-center">
+                        <TouchableOpacity
+                            onPress={() => setWorkoutPlannerOpen(true)}
+                            className="bg-black py-4 rounded-2xl items-center flex-row justify-center"
+                        >
                             <Text className="text-white font-bold">Open Workout Planner</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </ScrollView>
+
+            <MealPlannerModal
+                isOpen={mealPlannerOpen}
+                onClose={() => setMealPlannerOpen(false)}
+                clientId={id as string}
+                clientName={fullName}
+            />
+
+            <WorkoutPlannerModal
+                isOpen={workoutPlannerOpen}
+                onClose={() => setWorkoutPlannerOpen(false)}
+                clientId={id as string}
+                clientName={fullName}
+            />
         </SafeAreaView>
     );
 }
