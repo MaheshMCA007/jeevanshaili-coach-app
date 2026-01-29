@@ -23,7 +23,6 @@ export const fetchFollowups = createAsyncThunk(
                 api.get(`/followups/due?date=${date}`),
                 api.get(`/followups/due?date=${date}&rangeDays=7`),
             ]);
-
             return {
                 today: today.data,
                 nextWeek: nextWeek.data,

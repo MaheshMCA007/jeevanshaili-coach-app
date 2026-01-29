@@ -1,9 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../../api';
 
-export const fetchPricingPlans = createAsyncThunk('pricing/fetchPricingPlans', async () => {
-    const response = await api.get('/pricing/plans');
-    return response.data;
+export const fetchPricingPlans = createAsyncThunk('pricing/fetchPricingPlans', async (_, { rejectWithValue }) => {
+    try {
+        const response = await api.get('/pricing/plans');
+        const data = Array.isArray(response.data) ? response.data : [];
+        // Normalize IDs for pricing plans
+        return data.map((item: any) => ({
+            ...item,
+            id: item._id || item.rawId || item.id
+        }));
+    } catch (error: any) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to fetch pricing plans');
+    }
 });
 
 interface PricingState {
@@ -33,7 +42,7 @@ const pricingSlice = createSlice({
             })
             .addCase(fetchPricingPlans.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || 'Failed to fetch pricing plans';
+                state.error = (action.payload as string) || action.error.message || 'Failed to fetch pricing plans';
             });
     },
 });

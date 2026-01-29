@@ -14,7 +14,7 @@ export default function DrawerLayout() {
                 drawerType: isLargeScreen ? 'permanent' : 'front',
                 drawerStyle: {
                     width: 280,
-                    backgroundColor: '#0d4d44',
+                    backgroundColor: '#ffffff',
                     borderRightWidth: 0,
                 },
                 overlayColor: 'rgba(0,0,0,0.5)',

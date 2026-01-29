@@ -17,19 +17,19 @@ import { AppDispatch } from "../src/store";
 import { logout } from "../src/store/slices/authSlice";
 import SidebarProfile from "./ui/SidebarProfile";
 
+const PRIMARY_COLOR = "#E07A5F";
+
 const SidebarItem = ({ icon: Icon, label, path, active }: any) => {
     const router = useRouter();
 
     return (
         <TouchableOpacity
             onPress={() => router.push(path)}
-            className={`flex-row items-center px-6 py-4 mx-2 rounded-xl mb-1 ${active ? "bg-white" : ""
-                }`}
+            className={`flex-row items-center px-5 py-3.5 mx-3 rounded-[16px] mb-2 ${active ? "bg-[#fff1ed]" : "bg-transparent"}`}
         >
-            <Icon size={20} color={active ? "#0d9488" : "#cbd5e1"} />
+            <Icon size={20} color={active ? PRIMARY_COLOR : "#94a3b8"} />
             <Text
-                className={`ml-3 font-medium ${active ? "text-teal-800" : "text-slate-300"
-                    }`}
+                className={`ml-4 font-bold text-sm ${active ? "text-[#E07A5F]" : "text-slate-500"}`}
             >
                 {label}
             </Text>
@@ -37,7 +37,7 @@ const SidebarItem = ({ icon: Icon, label, path, active }: any) => {
     );
 };
 
-export default function Sidebar() {
+export default function Sidebar(props: any) {
     const pathname = usePathname();
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
@@ -64,12 +64,16 @@ export default function Sidebar() {
     };
 
     return (
-        <View className="flex-1 bg-[#0d4d44] pt-12">
+        <View className="flex-1 bg-white pt-12">
             {/* Profile Card */}
-            <SidebarProfile />
+            <TouchableOpacity onPress={handleLogout} className="px-2">
+                <SidebarProfile />
+            </TouchableOpacity>
+
+            <View className="h-px bg-slate-50 mx-6 mb-4 mt-2" />
 
             {/* Menu */}
-            <ScrollView className="flex-1">
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
                 {menuItems.map((item) => (
                     <SidebarItem
                         key={item.label}
@@ -82,10 +86,10 @@ export default function Sidebar() {
             </ScrollView>
 
             {/* Logout */}
-            <View className="p-6 border-t border-teal-900/50">
-                <TouchableOpacity onPress={handleLogout} className="flex-row items-center">
-                    <LogOut size={20} color="#cbd5e1" />
-                    <Text className="ml-3 font-medium text-slate-300">Logout</Text>
+            <View className="p-6 border-t border-slate-50">
+                <TouchableOpacity onPress={handleLogout} className="flex-row items-center justify-center bg-slate-50 p-4 rounded-2xl">
+                    <LogOut size={18} color="#64748b" />
+                    <Text className="ml-2 font-bold text-slate-500 text-sm">Sign Out</Text>
                 </TouchableOpacity>
             </View>
         </View>

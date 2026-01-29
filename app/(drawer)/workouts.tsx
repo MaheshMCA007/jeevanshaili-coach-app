@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../src/store';
 import { fetchWorkouts } from '../../src/store/slices/workoutSlice';
 
+const PRIMARY_COLOR = "#E07A5F";
+
 export default function WorkoutsScreen() {
     const dispatch = useDispatch<AppDispatch>();
     const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -18,17 +20,19 @@ export default function WorkoutsScreen() {
     }, [dispatch]);
 
     const renderWorkoutItem = ({ item }: any) => (
-        <View className="bg-white p-4 mb-3 rounded-3xl border border-gray-100 shadow-sm flex-1 mx-1">
-            <View className="bg-teal-50 w-10 h-10 rounded-2xl items-center justify-center mb-3">
-                <Dumbbell size={20} color="#0d9488" />
+        <View className="bg-white p-5 mb-4 rounded-[32px] border border-slate-50 shadow-sm flex-1 mx-1.5 aspect-square justify-between">
+            <View>
+                <View className="bg-slate-50 w-12 h-12 rounded-full items-center justify-center mb-4 border border-slate-100">
+                    <Dumbbell size={20} color={PRIMARY_COLOR} />
+                </View>
+                <Text className="text-slate-800 font-serif font-bold text-base leading-5 mb-1" numberOfLines={2}>{item.workoutName}</Text>
+                <Text className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">{item.category}</Text>
             </View>
-            <Text className="text-gray-900 font-bold mb-1" numberOfLines={1}>{item.workoutName}</Text>
-            <Text className="text-gray-400 text-xs mb-3">{item.category} • {item.unit}</Text>
 
-            <View className="flex-row items-center bg-orange-50 self-start px-2 py-1 rounded-lg">
+            <View className="flex-row items-center bg-orange-50 self-start px-3 py-1.5 rounded-full mt-2">
                 <Flame size={12} color="#f97316" />
-                <Text className="text-orange-600 text-[10px] font-bold ml-1">
-                    {item.caloriesPerMin || item.caloriesPerRep || 0} cal/{item.unit}
+                <Text className="text-orange-600 text-[9px] font-bold ml-1">
+                    {item.caloriesPerMin || item.caloriesPerRep || 0} cal
                 </Text>
             </View>
         </View>
@@ -37,37 +41,32 @@ export default function WorkoutsScreen() {
     return (
         <SafeAreaView className="flex-1 bg-slate-50" edges={['top']}>
             <View className="px-6 py-6 flex-1">
-                <View className="mb-6 flex-row items-center">
+                <View className="mb-8 flex-row items-center">
                     <TouchableOpacity
                         onPress={() => navigation.openDrawer()}
-                        className="w-10 h-10 bg-white rounded-xl items-center justify-center shadow-sm border border-gray-100 mr-4"
+                        className="w-12 h-12 bg-white rounded-full items-center justify-center shadow-sm border border-slate-100 mr-4"
                     >
-                        <Menu size={24} color="#0d4d44" />
+                        <Menu size={22} color="#1e293b" />
                     </TouchableOpacity>
                     <View>
-                        <Text className="text-2xl font-bold text-gray-900">Workout Library</Text>
-                        <Text className="text-gray-500 text-sm">Browse workouts available for plans</Text>
+                        <Text className="text-slate-400 text-[10px] font-bold uppercase tracking-[2px]">Resources</Text>
+                        <Text className="text-3xl font-serif font-semibold text-slate-800">Workouts</Text>
                     </View>
                 </View>
 
-                <View className="flex-row gap-2 mb-6">
-                    <View className="flex-1 bg-white border border-gray-200 rounded-2xl px-4 flex-row items-center h-12 shadow-sm">
-                        <Search size={18} color="#94a3b8" />
-                        <TextInput
-                            placeholder="Search workouts..."
-                            className="flex-1 ml-2 text-gray-800"
-                            placeholderTextColor="#94a3b8"
-                        />
-                    </View>
-                    <TouchableOpacity className="bg-black px-6 rounded-2xl items-center justify-center">
-                        <Text className="text-white font-bold">Search</Text>
-                    </TouchableOpacity>
+                <View className="flex-row items-center bg-white rounded-full px-6 py-3.5 border border-slate-100 shadow-sm mb-8">
+                    <Search size={20} color="#94a3b8" className="mr-3" />
+                    <TextInput
+                        className="flex-1 text-slate-800 font-medium h-full"
+                        placeholder="Search workouts..."
+                        placeholderTextColor="#94a3b8"
+                    />
                 </View>
 
                 {loading ? (
-                    <ActivityIndicator size="large" color="#0d9488" className="mt-10" />
+                    <ActivityIndicator size="large" color={PRIMARY_COLOR} className="mt-10" />
                 ) : error ? (
-                    <Text className="text-red-500 text-center mt-10">{error}</Text>
+                    <Text className="text-red-400 text-center mt-10 font-medium text-sm">{error}</Text>
                 ) : (
                     <FlatList
                         data={workouts}
@@ -75,7 +74,8 @@ export default function WorkoutsScreen() {
                         keyExtractor={(item) => item.id}
                         numColumns={2}
                         showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{ paddingBottom: 100 }}
+                        contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 4 }}
+                        columnWrapperStyle={{ justifyContent: 'space-between', marginLeft: -6, marginRight: -6 }}
                     />
                 )}
             </View>

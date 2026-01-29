@@ -53,7 +53,7 @@ export const fetchClientDetail = createAsyncThunk(
                 api.get(`/clients/${clientId}`),
                 api.get(`/clients/${clientId}/health?limit=60`),
             ]);
-
+            // console.log("healthRes---------", JSON.stringify(healthRes.data, null, 2));
             return {
                 detail: detailRes.data,
                 health: healthRes.data,
