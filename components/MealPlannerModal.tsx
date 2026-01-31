@@ -171,8 +171,11 @@ export default function MealPlannerModal({ isOpen, onClose, clientId, clientName
                             <Text className="text-2xl font-extrabold text-gray-900 tracking-tight">Daily Meal Planner</Text>
                             <Text className="text-gray-400 text-xs mt-0.5">Assign meals for a specific date.</Text>
                         </View>
-                        <TouchableOpacity onPress={onClose} className="px-4 py-2 bg-gray-50 rounded-full">
-                            <Text className="text-gray-500 font-bold text-sm">Close</Text>
+                        <TouchableOpacity
+                            onPress={onClose}
+                            className="w-10 h-10 rounded-full bg-red-50 items-center justify-center"
+                        >
+                            <Text className="text-red-600 font-extrabold text-lg">✕</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -244,7 +247,7 @@ export default function MealPlannerModal({ isOpen, onClose, clientId, clientName
                                     </View>
                                     <TouchableOpacity
                                         onPress={handleSearch}
-                                        className="bg-black py-3.5 rounded-2xl items-center shadow-lg shadow-black/20"
+                                        className="bg-slate-900 py-4 rounded-2xl items-center mb-4 shadow-lg shadow-slate-200"
                                         disabled={searchLoading}
                                     >
                                         {searchLoading ? (
@@ -279,7 +282,11 @@ export default function MealPlannerModal({ isOpen, onClose, clientId, clientName
 
                                 <TouchableOpacity
                                     onPress={handleAssignMeals}
-                                    className={`mt-6 py-5 rounded-3xl items-center shadow-xl ${assigning ? 'bg-gray-300' : 'bg-black shadow-black/30'}`}
+                                    // className={`mt-6 py-5 rounded-3xl items-center shadow-xl ${assigning ? 'bg-gray-300' : 'bg-black shadow-black/30'}`}
+                                    className={`py-4 rounded-2xl items-center mb-4 shadow-lg ${assigning
+                                        ? 'bg-gray-300 shadow-gray-300'
+                                        : 'bg-slate-900 shadow-black/30'
+                                        }`}
                                     disabled={assigning}
                                 >
                                     {assigning ? (
@@ -288,6 +295,7 @@ export default function MealPlannerModal({ isOpen, onClose, clientId, clientName
                                         <Text className="text-white font-extrabold text-base">Assign Selected Meals</Text>
                                     )}
                                 </TouchableOpacity>
+
                                 <View className="h-20" />
                             </View>
                         </View>

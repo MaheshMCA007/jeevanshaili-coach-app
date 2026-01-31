@@ -16,53 +16,153 @@ import MealPlannerModal from '../../components/MealPlannerModal';
 import WorkoutPlannerModal from '../../components/WorkoutPlannerModal';
 import { AppDispatch, RootState } from '../../src/store';
 import { clearSelectedClient, fetchClientDetail } from '../../src/store/slices/clientSlice';
+import { colors, fontSize, radius, spacing } from '../../src/theme/design-system';
 
-const PRIMARY_COLOR = "#E07A5F";
+const PRIMARY_COLOR = colors.primary;
 const screenWidth = Dimensions.get('window').width;
 
 // Toggle Button Component
 const ChartToggle = ({ type, setType }: { type: 'line' | 'bar', setType: (t: 'line' | 'bar') => void }) => (
-    <View className="flex-row bg-slate-50 p-1 rounded-xl">
+    <View style={{ flexDirection: 'row', backgroundColor: colors.slate[100], padding: spacing[1], borderRadius: radius.xl }}>
         <TouchableOpacity
             onPress={() => setType('line')}
-            className={`px-3 py-1 rounded-lg ${type === 'line' ? 'bg-white shadow-sm' : ''}`}
+            style={{
+                paddingHorizontal: spacing[3],
+                paddingVertical: spacing[1],
+                borderRadius: radius.lg,
+                backgroundColor: type === 'line' ? colors.white : 'transparent',
+                shadowColor: type === 'line' ? '#000' : 'transparent',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 2,
+                elevation: type === 'line' ? 1 : 0,
+            }}
         >
-            <Text className={`text-[10px] font-bold ${type === 'line' ? 'text-slate-700' : 'text-slate-400'}`}>Line</Text>
+            <Text style={{ fontSize: fontSize.xs, fontWeight: '700', color: type === 'line' ? colors.slate[700] : colors.slate[400] }}>Line</Text>
         </TouchableOpacity>
         <TouchableOpacity
             onPress={() => setType('bar')}
-            className={`px-3 py-1 rounded-lg ${type === 'bar' ? 'bg-white shadow-sm' : ''}`}
+            style={{
+                paddingHorizontal: spacing[3],
+                paddingVertical: spacing[1],
+                borderRadius: radius.lg,
+                backgroundColor: type === 'bar' ? colors.white : 'transparent',
+                marginLeft: spacing[1],
+                shadowColor: type === 'bar' ? '#000' : 'transparent',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 2,
+                elevation: type === 'bar' ? 1 : 0,
+            }}
         >
-            <Text className={`text-[10px] font-bold ${type === 'bar' ? 'text-slate-700' : 'text-slate-400'}`}>Bar</Text>
+            <Text style={{ fontSize: fontSize.xs, fontWeight: '700', color: type === 'bar' ? colors.slate[700] : colors.slate[400] }}>Bar</Text>
         </TouchableOpacity>
     </View>
 );
 
 const KPICard = ({ title, value, unit, icon: Icon, color }: any) => (
-    <View className="bg-white p-5 rounded-[32px] border border-slate-50 w-[48%] mb-4 shadow-sm h-32 justify-between">
-        <View className="flex-row justify-between items-start">
-            <Text className="text-slate-400 text-[9px] font-bold uppercase tracking-wider">{title}</Text>
-            <View className={`p-1.5 rounded-full ${color === 'orange' ? 'bg-orange-50' : 'bg-slate-50'}`}>
-                {Icon && <Icon size={12} color={color === 'orange' ? PRIMARY_COLOR : '#94a3b8'} />}
+    <View style={{
+        backgroundColor: colors.white,
+        padding: spacing[5],
+        borderRadius: radius['3xl'],
+        borderWidth: 1,
+        borderColor: colors.slate[50],
+        width: '48%',
+        marginBottom: spacing[4],
+        minHeight: 128,
+        justifyContent: 'space-between',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
+    }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Text
+                style={{
+                    color: colors.slate[400],
+                    fontSize: 9,
+                    fontWeight: '700',
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                    flexShrink: 1,
+                    marginRight: spacing[2],
+                }}
+                numberOfLines={1}
+            >
+                {title}
+            </Text>
+            <View style={{
+                padding: spacing[1.5],
+                borderRadius: radius.full,
+                backgroundColor: color === 'orange' ? colors.primaryLight : colors.slate[50],
+            }}>
+                {Icon && <Icon size={12} color={color === 'orange' ? PRIMARY_COLOR : colors.slate[400]} />}
             </View>
         </View>
-        <Text className="text-slate-800 font-serif font-black text-2xl">{value} <Text className="text-xs font-bold text-slate-400 uppercase">{unit}</Text></Text>
+        <Text
+            style={{
+                color: colors.slate[800],
+                fontWeight: '900',
+                fontSize: fontSize['2xl'],
+            }}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+        >
+            {value} <Text style={{ fontSize: fontSize.xs, fontWeight: '700', color: colors.slate[400], textTransform: 'uppercase' }}>{unit}</Text>
+        </Text>
     </View>
 );
 
 const LogSection = ({ title, data, renderRow, icon: Icon }: any) => (
-    <View className="bg-white p-6 rounded-[32px] border border-slate-50 mb-6 shadow-sm">
-        <View className="flex-row items-center justify-between mb-4">
-            <View className="flex-row items-center">
-                <View className="w-8 h-8 rounded-full bg-slate-50 items-center justify-center mr-3 border border-slate-100">
+    <View style={{
+        backgroundColor: colors.white,
+        padding: spacing[6],
+        borderRadius: radius['3xl'],
+        borderWidth: 1,
+        borderColor: colors.slate[50],
+        marginBottom: spacing[6],
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
+    }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing[4] }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                <View style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: radius.full,
+                    backgroundColor: colors.slate[50],
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: spacing[3],
+                    borderWidth: 1,
+                    borderColor: colors.slate[100],
+                }}>
                     <Icon size={14} color={PRIMARY_COLOR} />
                 </View>
-                <Text className="text-lg font-serif font-bold text-slate-800">{title}</Text>
+                <Text
+                    style={{
+                        fontSize: fontSize.lg,
+                        fontWeight: '700',
+                        color: colors.slate[800],
+                        flexShrink: 1,
+                    }}
+                    numberOfLines={1}
+                >
+                    {title}
+                </Text>
             </View>
         </View>
-        <ScrollView className="max-h-60" nestedScrollEnabled showsVerticalScrollIndicator={false}>
-            <View className="space-y-4">
-                {data.length > 0 ? data.map(renderRow) : <Text className="text-slate-300 text-xs italic text-center py-4">No logs recorded yet.</Text>}
+        <ScrollView style={{ maxHeight: 240 }} nestedScrollEnabled showsVerticalScrollIndicator={false}>
+            <View style={{ gap: spacing[4] }}>
+                {data.length > 0 ? data.map(renderRow) : (
+                    <Text style={{ color: colors.slate[300], fontSize: fontSize.xs, fontStyle: 'italic', textAlign: 'center', paddingVertical: spacing[4] }}>
+                        No logs recorded yet.
+                    </Text>
+                )}
             </View>
         </ScrollView>
     </View>
@@ -198,7 +298,7 @@ export default function ClientDetailScreen() {
 
     const fullName = `${selectedClient.firstName || ''} ${selectedClient.lastName || ''}`.trim() || selectedClient.name || 'Client';
 
-    const renderChart = (type: 'line' | 'bar', data: any, height: number = 200, color = PRIMARY_COLOR) => {
+    const renderChart = (type: 'line' | 'bar', data: any, height: number = 220, color = PRIMARY_COLOR) => {
         const isBar = type === 'bar';
 
         const specificConfig = {
@@ -206,28 +306,35 @@ export default function ClientDetailScreen() {
             color: (opacity = 1) => color === PRIMARY_COLOR
                 ? `rgba(224, 122, 95, ${opacity})`
                 : `rgba(249, 115, 22, ${opacity})`,
+            propsForLabels: {
+                fontSize: 10,
+                fontWeight: "bold" as const,
+            }
         };
 
-        if (data.labels.length === 0) {
-            return <View className="h-40 items-center justify-center"><Text className="text-slate-300">Not enough data</Text></View>;
-        }
+        const safeData = {
+            labels: data?.labels?.length ? data.labels : ["M", "T", "W", "T", "F", "S", "S"],
+            datasets: [{ data: data?.datasets?.[0]?.data?.map((d: any) => Number(d) || 0) || [0, 0, 0, 0, 0, 0, 0] }]
+        };
+
+        const chartWidth = screenWidth + 24;
 
         return isBar ? (
             <BarChart
-                data={data}
-                width={screenWidth - 84}
+                data={safeData}
+                width={chartWidth}
                 height={height}
                 chartConfig={specificConfig}
                 showBarTops={false}
                 fromZero
                 yAxisLabel=""
                 yAxisSuffix=""
-                style={{ borderRadius: 16, paddingRight: 0 }}
+                style={{ marginLeft: -15, borderRadius: radius.xl, paddingRight: 0 }}
             />
         ) : (
             <LineChart
-                data={data}
-                width={screenWidth - 84}
+                data={safeData}
+                width={chartWidth}
                 height={height}
                 chartConfig={specificConfig}
                 bezier
@@ -235,7 +342,7 @@ export default function ClientDetailScreen() {
                 withInnerLines={true}
                 withVerticalLines={false}
                 withHorizontalLines={true}
-                style={{ borderRadius: 16, paddingRight: 0 }}
+                style={{ marginLeft: -15, borderRadius: radius.xl, paddingRight: 0 }}
             />
         );
     }
@@ -278,8 +385,8 @@ export default function ClientDetailScreen() {
                 {/* Main Trends Charts */}
                 <View className="px-6 mt-4 space-y-6">
                     {/* Steps Trend */}
-                    <View className="bg-white p-6 rounded-[32px] border border-slate-50 shadow-sm">
-                        <View className="flex-row justify-between items-center mb-6">
+                    <View className="bg-white py-6 rounded-[32px] border border-slate-50 shadow-sm overflow-hidden">
+                        <View className="flex-row justify-between items-center mb-6 px-6">
                             <Text className="text-lg font-serif font-bold text-slate-800">Steps Trend</Text>
                             <ChartToggle type={stepsChartType} setType={setStepsChartType} />
                         </View>
@@ -287,8 +394,8 @@ export default function ClientDetailScreen() {
                     </View>
 
                     {/* Calories Intake */}
-                    <View className="bg-white p-6 rounded-[32px] border border-slate-50 shadow-sm">
-                        <View className="flex-row justify-between items-center mb-6">
+                    <View className="bg-white py-6 rounded-[32px] border border-slate-50 shadow-sm overflow-hidden">
+                        <View className="flex-row justify-between items-center mb-6 px-6">
                             <Text className="text-lg font-serif font-bold text-slate-800">Calories Intake</Text>
                             <ChartToggle type={caloriesChartType} setType={setCaloriesChartType} />
                         </View>
@@ -296,8 +403,8 @@ export default function ClientDetailScreen() {
                     </View>
 
                     {/* Weight Trend */}
-                    <View className="bg-white p-6 rounded-[32px] border border-slate-50 shadow-sm">
-                        <View className="flex-row justify-between items-center mb-6">
+                    <View className="bg-white py-6 rounded-[32px] border border-slate-50 shadow-sm overflow-hidden">
+                        <View className="flex-row justify-between items-center mb-6 px-6">
                             <Text className="text-lg font-serif font-bold text-slate-800">Weight Trend</Text>
                             <ChartToggle type={weightChartType} setType={setWeightChartType} />
                         </View>

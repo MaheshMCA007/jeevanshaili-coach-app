@@ -2,7 +2,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useNavigation } from 'expo-router';
 import { Bell, ChevronRight, CircleHelp, LogOut, Menu, Shield, User } from 'lucide-react-native';
 import React from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../src/store';
@@ -49,14 +49,19 @@ export default function SettingsScreen() {
                 <View className="bg-white p-6 rounded-[32px] border border-slate-50 shadow-sm mb-10 items-center relative overflow-hidden">
                     <View className="absolute top-0 left-0 right-0 h-24 bg-slate-100" />
                     <View className="w-24 h-24 rounded-full bg-slate-200 items-center justify-center mb-4 border-4 border-white shadow-sm mt-4">
-                        <Text className="text-slate-500 text-3xl font-serif font-bold">{user?.name?.charAt(0) || 'C'}</Text>
+                        {/* <Text className="text-slate-500 text-3xl font-serif font-bold">{user?.name?.charAt(0) || 'M'}</Text> */}
+                        <Image
+                            source={{ uri: user?.profile?.avatar }}
+                            className="w-full h-full rounded-full"
+                            resizeMode="cover"
+                        />
                     </View>
                     <Text className="text-2xl font-serif font-bold text-slate-800">{user?.name || 'Coach Chandan'}</Text>
                     <Text className="text-slate-400 font-medium text-sm mb-6">{user?.email || 'coach@jeevanshaili.com'}</Text>
 
-                    <TouchableOpacity className="bg-slate-900 px-8 py-3 rounded-2xl shadow-lg shadow-slate-200">
+                    {/* <TouchableOpacity className="bg-slate-900 px-8 py-3 rounded-2xl shadow-lg shadow-slate-200">
                         <Text className="text-white font-bold text-sm">Edit Profile</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
                 <View className="mb-8">
@@ -77,8 +82,8 @@ export default function SettingsScreen() {
                 </View>
 
                 <View className="items-center py-6">
-                    <Text className="text-slate-300 text-[10px] font-bold uppercase tracking-wider">Version 1.0.0 (Build 42)</Text>
-                    <Text className="text-slate-300 text-[10px] font-bold uppercase tracking-wider mt-1">Powered by JeevanShali AI</Text>
+                    {/* <Text className="text-slate-300 text-[10px] font-bold uppercase tracking-wider">Version 1.0.0 (Build 42)</Text> */}
+                    <Text className="text-slate-300 text-[10px] font-bold uppercase tracking-wider mt-1">Powered by JeevanShali Coach</Text>
                 </View>
 
                 <View className="h-10" />

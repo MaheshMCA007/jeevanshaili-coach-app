@@ -1,14 +1,15 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useNavigation, useRouter } from 'expo-router';
-import { ChevronRight, Menu, Plus, Search, User } from 'lucide-react-native';
+import { ChevronRight, Menu, Plus, Search } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../src/store';
 import { fetchClients, setSelectedClientId } from '../../src/store/slices/clientSlice';
+import { colors, fontSize, iconTextSpacing, radius, sectionSpacing, spacing } from '../../src/theme/design-system';
 
-const PRIMARY_COLOR = "#E07A5F";
+const PRIMARY_COLOR = colors.primary;
 
 export default function ClientsScreen() {
     const dispatch = useDispatch<AppDispatch>();
@@ -31,92 +32,228 @@ export default function ClientsScreen() {
 
     const renderClientItem = ({ item }: { item: any }) => (
         <TouchableOpacity
-            className="bg-white p-5 rounded-[28px] shadow-sm border border-slate-50 mb-3 flex-row items-center"
+            style={{
+                backgroundColor: colors.white,
+                padding: spacing[5],
+                borderRadius: radius['3xl'],
+                borderWidth: 1,
+                borderColor: colors.slate[50],
+                marginBottom: spacing[3],
+                flexDirection: 'row',
+                alignItems: 'center',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 2,
+                elevation: 1,
+            }}
             onPress={() => {
                 dispatch(setSelectedClientId(item._id));
-                router.push(`/client/${item._id}`);
+                router.push(`/client/${item._id}` as any);
             }}
         >
-            <View className="w-14 h-14 bg-slate-50 rounded-full items-center justify-center mr-4 border border-slate-100">
+            <View style={{
+                width: 56,
+                height: 56,
+                backgroundColor: colors.slate[50],
+                borderRadius: radius.full,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: spacing[4],
+                borderWidth: 1,
+                borderColor: colors.slate[100],
+            }}>
                 {item.profileImage ? (
-                    <Image source={{ uri: item.profileImage }} className="w-14 h-14 rounded-full" />
+                    <Image source={{ uri: item.profileImage }} style={{ width: 56, height: 56, borderRadius: radius.full }} />
                 ) : (
-                    <Text className="text-slate-400 font-serif font-bold text-lg">
+                    <Text style={{ color: colors.slate[400], fontWeight: '700', fontSize: fontSize.lg }}>
                         {(item.firstName?.[0] || item.name?.[0] || '').toUpperCase()}
                     </Text>
                 )}
             </View>
-            <View className="flex-1">
-                <Text className="text-slate-800 font-bold text-lg font-serif">
+            <View style={{ flex: 1, marginRight: spacing[2] }}>
+                <Text
+                    style={{
+                        color: colors.slate[800],
+                        fontWeight: '700',
+                        fontSize: fontSize.lg,
+                    }}
+                    numberOfLines={1}
+                >
                     {item.firstName} {item.lastName}
                 </Text>
-                <Text className="text-slate-400 text-xs font-medium tracking-wide">{item.email}</Text>
-                <View className="flex-row items-center mt-2">
-                    <View className={`px-2.5 py-1 rounded-full ${item.status === 'active' ? 'bg-emerald-50' : 'bg-slate-50'}`}>
-                        <Text className={`text-[9px] font-bold uppercase tracking-wider ${item.status === 'active' ? 'text-emerald-600' : 'text-slate-500'}`}>
+                <Text
+                    style={{
+                        color: colors.slate[400],
+                        fontSize: fontSize.xs,
+                        fontWeight: '500',
+                        marginTop: spacing[0.5],
+                    }}
+                    numberOfLines={1}
+                >
+                    {item.email}
+                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: spacing[2] }}>
+                    <View style={{
+                        paddingHorizontal: spacing[2.5],
+                        paddingVertical: spacing[1],
+                        borderRadius: radius.full,
+                        backgroundColor: item.status === 'active' ? '#f0fdf4' : colors.slate[50],
+                    }}>
+                        <Text style={{
+                            fontSize: 9,
+                            fontWeight: '700',
+                            textTransform: 'uppercase',
+                            letterSpacing: 0.5,
+                            color: item.status === 'active' ? colors.success : colors.slate[500],
+                        }}>
                             {item.status?.toUpperCase() || 'STANDARD'}
                         </Text>
                     </View>
                     {item.plan && (
-                        <Text className="text-slate-300 text-[10px] font-bold uppercase ml-2">• {item.plan}</Text>
+                        <Text
+                            style={{
+                                color: colors.slate[300],
+                                fontSize: 10,
+                                fontWeight: '700',
+                                textTransform: 'uppercase',
+                                marginLeft: spacing[2]
+                            }}
+                            numberOfLines={1}
+                        >
+                            • {item.plan}
+                        </Text>
                     )}
                 </View>
             </View>
-            <View className="w-8 h-8 rounded-full bg-slate-50 items-center justify-center">
-                <ChevronRight size={16} color="#94a3b8" />
+            <View style={{
+                width: 32,
+                height: 32,
+                borderRadius: radius.full,
+                backgroundColor: colors.slate[50],
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
+                <ChevronRight size={16} color={colors.slate[400]} />
             </View>
         </TouchableOpacity>
     );
 
     return (
-        <SafeAreaView className="flex-1 bg-slate-50" edges={['top']}>
-            <View className="px-6 py-6 font-sans flex-1">
-                {/* Premium Header */}
-                <View className="flex-row justify-between items-center mb-8">
-                    <View className="flex-row items-center">
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.slate[50] }} edges={['top']}>
+            <View style={{ paddingHorizontal: sectionSpacing.horizontal, paddingVertical: sectionSpacing.vertical, flex: 1 }}>
+                {/* Header */}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing[8] }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                         <TouchableOpacity
                             onPress={() => navigation.openDrawer()}
-                            className="w-12 h-12 bg-white rounded-full items-center justify-center shadow-sm border border-slate-100 mr-4"
+                            style={{
+                                width: 48,
+                                height: 48,
+                                backgroundColor: colors.white,
+                                borderRadius: radius.full,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderWidth: 1,
+                                borderColor: colors.slate[100],
+                                marginRight: spacing[4],
+                                shadowColor: '#000',
+                                shadowOffset: { width: 0, height: 1 },
+                                shadowOpacity: 0.05,
+                                shadowRadius: 2,
+                                elevation: 1,
+                            }}
                         >
-                            <Menu size={22} color="#1e293b" />
+                            <Menu size={22} color={colors.slate[800]} />
                         </TouchableOpacity>
-                        <View>
-                            <Text className="text-slate-400 text-[10px] font-bold uppercase tracking-[2px]">Management</Text>
-                            <Text className="text-3xl font-serif font-semibold text-slate-800">Your Clients</Text>
+                        <View style={{ flex: 1 }}>
+                            <Text style={{ color: colors.slate[400], fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 2 }}>
+                                Management
+                            </Text>
+                            <Text
+                                style={{ fontSize: 30, fontWeight: '600', color: colors.slate[800] }}
+                                numberOfLines={1}
+                            >
+                                Your Clients
+                            </Text>
                         </View>
                     </View>
-                    <TouchableOpacity className="w-12 h-12 bg-[#E07A5F] rounded-full items-center justify-center shadow-lg shadow-orange-200">
-                        <Plus size={24} color="white" />
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            backgroundColor: PRIMARY_COLOR,
+                            borderRadius: radius.full,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            shadowColor: PRIMARY_COLOR,
+                            shadowOffset: { width: 0, height: 4 },
+                            shadowOpacity: 0.3,
+                            shadowRadius: 8,
+                            elevation: 4,
+                        }}
+                    >
+                        <Plus size={24} color={colors.white} />
                     </TouchableOpacity>
                 </View>
 
                 {/* Search Bar */}
-                <View className="flex-row items-center bg-white rounded-full px-6 py-3.5 border border-slate-100 shadow-sm mb-8">
-                    <Search size={20} color="#94a3b8" className="mr-3" />
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: colors.white,
+                    borderRadius: radius.full,
+                    paddingHorizontal: sectionSpacing.horizontal,
+                    paddingVertical: spacing[3.5],
+                    borderWidth: 1,
+                    borderColor: colors.slate[100],
+                    marginBottom: spacing[8],
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.05,
+                    shadowRadius: 2,
+                    elevation: 1,
+                }}>
+                    <Search size={20} color={colors.slate[400]} />
                     <TextInput
-                        className="flex-1 text-slate-800 font-medium h-full"
+                        style={{
+                            flex: 1,
+                            color: colors.slate[800],
+                            fontWeight: '500',
+                            marginLeft: iconTextSpacing,
+                            fontSize: fontSize.base,
+                        }}
                         placeholder="Search clients..."
-                        placeholderTextColor="#94a3b8"
+                        placeholderTextColor={colors.slate[400]}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                     />
                 </View>
 
-                {loading && clients.length === 0 ? (
-                    <View className="items-center justify-center py-20">
+                {/* Client List */}
+                {loading ? (
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <ActivityIndicator size="large" color={PRIMARY_COLOR} />
                     </View>
                 ) : (
                     <FlatList
                         data={filteredClients}
-                        keyExtractor={(item) => item._id}
                         renderItem={renderClientItem}
-                        contentContainerStyle={{ paddingBottom: 100 }}
+                        keyExtractor={(item) => item._id}
                         showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingBottom: spacing[6] }}
                         ListEmptyComponent={
-                            <View className="items-center justify-center py-20 bg-white rounded-[32px] border border-dashed border-slate-200 p-8">
-                                <User size={48} color="#cbd5e1" />
-                                <Text className="text-slate-400 font-medium mt-4">No clients found</Text>
+                            <View style={{
+                                backgroundColor: colors.white,
+                                padding: spacing[12],
+                                borderRadius: radius['3xl'],
+                                borderWidth: 1,
+                                borderColor: colors.slate[100],
+                                alignItems: 'center',
+                            }}>
+                                <Text style={{ color: colors.slate[400], fontSize: fontSize.sm, textAlign: 'center' }}>
+                                    {searchQuery ? 'No clients found' : 'No clients yet'}
+                                </Text>
                             </View>
                         }
                     />

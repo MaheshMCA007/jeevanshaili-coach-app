@@ -15,21 +15,46 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../src/store";
 import { logout } from "../src/store/slices/authSlice";
+import { colors, iconTextSpacing, radius, spacing } from "../src/theme/design-system";
 import SidebarProfile from "./ui/SidebarProfile";
 
-const PRIMARY_COLOR = "#E07A5F";
+const PRIMARY_COLOR = colors.primary;
 
-const SidebarItem = ({ icon: Icon, label, path, active }: any) => {
+interface SidebarItemProps {
+    icon: React.ComponentType<any>;
+    label: string;
+    path: string;
+    active: boolean;
+}
+
+const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, path, active }) => {
     const router = useRouter();
 
     return (
         <TouchableOpacity
-            onPress={() => router.push(path)}
-            className={`flex-row items-center px-5 py-3.5 mx-3 rounded-[16px] mb-2 ${active ? "bg-[#fff1ed]" : "bg-transparent"}`}
+            onPress={() => router.push(path as any)}
+            style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: spacing[5],
+                paddingVertical: spacing[3],
+                marginHorizontal: spacing[3],
+                marginBottom: spacing[2],
+                borderRadius: radius.xl,
+                backgroundColor: active ? colors.primaryLight : 'transparent',
+            }}
         >
-            <Icon size={20} color={active ? PRIMARY_COLOR : "#94a3b8"} />
+            <Icon size={20} color={active ? PRIMARY_COLOR : colors.slate[400]} />
             <Text
-                className={`ml-4 font-bold text-sm ${active ? "text-[#E07A5F]" : "text-slate-500"}`}
+                style={{
+                    marginLeft: iconTextSpacing,
+                    fontSize: 14,
+                    fontWeight: '600',
+                    color: active ? PRIMARY_COLOR : colors.slate[500],
+                    flexShrink: 1,
+                }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
             >
                 {label}
             </Text>
@@ -64,16 +89,31 @@ export default function Sidebar(props: any) {
     };
 
     return (
-        <View className="flex-1 bg-white pt-12">
+        <View style={{ flex: 1, backgroundColor: colors.white, paddingTop: spacing[12] }}>
             {/* Profile Card */}
-            <TouchableOpacity onPress={handleLogout} className="px-2">
+            <TouchableOpacity
+                onPress={handleLogout}
+                style={{ paddingHorizontal: spacing[2] }}
+            >
                 <SidebarProfile />
             </TouchableOpacity>
 
-            <View className="h-px bg-slate-50 mx-6 mb-4 mt-2" />
+            <View
+                style={{
+                    height: 1,
+                    backgroundColor: colors.slate[50],
+                    marginHorizontal: spacing[6],
+                    marginBottom: spacing[4],
+                    marginTop: spacing[2]
+                }}
+            />
 
             {/* Menu */}
-            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={{ flex: 1 }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: spacing[4] }}
+            >
                 {menuItems.map((item) => (
                     <SidebarItem
                         key={item.label}
@@ -86,10 +126,35 @@ export default function Sidebar(props: any) {
             </ScrollView>
 
             {/* Logout */}
-            <View className="p-6 border-t border-slate-50">
-                <TouchableOpacity onPress={handleLogout} className="flex-row items-center justify-center bg-slate-50 p-4 rounded-2xl">
-                    <LogOut size={18} color="#64748b" />
-                    <Text className="ml-2 font-bold text-slate-500 text-sm">Sign Out</Text>
+            <View
+                style={{
+                    padding: spacing[6],
+                    borderTopWidth: 1,
+                    borderTopColor: colors.slate[50]
+                }}
+            >
+                <TouchableOpacity
+                    onPress={handleLogout}
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: colors.slate[50],
+                        padding: spacing[4],
+                        borderRadius: radius['2xl'],
+                    }}
+                >
+                    <LogOut size={18} color={colors.slate[500]} />
+                    <Text
+                        style={{
+                            marginLeft: iconTextSpacing,
+                            fontWeight: '600',
+                            color: colors.slate[500],
+                            fontSize: 14,
+                        }}
+                    >
+                        Sign Out
+                    </Text>
                 </TouchableOpacity>
             </View>
         </View>
